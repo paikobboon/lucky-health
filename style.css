@@ -103,4 +103,5 @@ h1 { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -0
 .insight-item.normal { background: var(--good-bg); color: #166534; }
 .insight-item.warning { background: var(--warn-bg); color: #92400e; }
 
-body { background-color: var(--tg-theme-bg-color, var(--bg)); }
+body { background-color: var(--bg) !important; color-scheme: light only; }
+@media (prefers-color-scheme: dark) { body { background-color: var(--bg) !important; color: var(--text) !important; } }
