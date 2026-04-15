@@ -31,11 +31,11 @@ function retry() { init(); }
 function render() {
   document.getElementById('content').style.display = 'block';
   const logs = DATA.dailyLogs || [], latest = logs[logs.length - 1] || {}, appts = DATA.appointments || [], weights = DATA.weightHistory || [];
-  setDate(latest.date);
+  setDate(); // Always show today
   setGreeting(latest);
-  renderMetaBadge();
+  renderMetaBadge(latest);
   renderAlert(latest);
-  renderMeds(latest, DATA.medications || []);
+  renderMeds(latest);
   renderGlucose(latest, logs);
   renderWeight(latest, weights);
   renderAppointments(appts);
@@ -44,8 +44,8 @@ function render() {
   renderInsights(logs, weights, appts);
 }
 
-function setDate(dataDate) {
-  const d = dataDate ? parseLocalDate(dataDate) : new Date();
+function setDate() {
+  const d = new Date();
   document.getElementById('dateLabel').textContent = d.getDate() + ' ' + THAI_MONTHS[d.getMonth()] + ' ' + (d.getFullYear() + 543);
 }
 
@@ -60,13 +60,21 @@ function setGreeting(l) {
   document.getElementById('greetingText').textContent = g + s;
 }
 
-function renderMetaBadge() {
+function renderMetaBadge(latest) {
   const el = document.getElementById('metaBadge');
-  if (!el || !DATA.fetchedAt) return;
-  const mins = Math.floor((new Date() - new Date(DATA.fetchedAt)) / 6e4);
-  const freshness = mins < 5 ? 'เมื่อสักครู่' : mins < 60 ? mins + ' นาทีที่แล้ว' : mins < 1440 ? Math.floor(mins / 60) + ' ชม.' : Math.floor(mins / 1440) + ' วัน';
-  el.textContent = '🔄 ' + freshness;
-  el.className = 'meta-badge ' + (mins < 60 ? 'current' : 'stale');
+  if (!el) return;
+  const today = localDateStr();
+  const isToday = latest.date === today;
+  if (isToday) {
+    el.textContent = 'ข้อมูลวันนี้';
+    el.className = 'meta-badge current';
+  } else if (latest.date) {
+    el.textContent = 'ข้อมูล ' + fmtDate(latest.date);
+    el.className = 'meta-badge stale';
+  } else {
+    el.textContent = 'ยังไม่มีข้อมูล';
+    el.className = 'meta-badge stale';
+  }
 }
 
 function renderAlert(l) {
@@ -77,23 +85,22 @@ function renderAlert(l) {
 function confirmMed() {
   document.getElementById('alertBanner').style.display = 'none';
   const r = document.getElementById('eveningMedRow');
-  if (r) { r.classList.remove('pending-row'); r.querySelector('.med-status').textContent = '✅'; r.style.background = 'var(--good-bg)'; }
+  if (r) { r.classList.remove('pending-row'); r.querySelector('.med-status').innerHTML = '<i class="icon-check"></i>'; r.style.background = 'var(--good-bg)'; }
 }
 
-/* ====== MEDS — use real medication list from Notion ====== */
-function renderMeds(l, medications) {
+/* ====== MEDS — real schedule from care-agent medications.md ====== */
+const MED_SCHEDULE = {
+  morning: 'Metformin, Tanzaril, Amlodipine, Vit B, Ferli-6 + อินซูลิน 15u',
+  evening: 'Metformin, Vit B + อินซูลิน 15u'
+};
+
+function renderMeds(l) {
   const el = document.getElementById('medRows'); if (!el) return;
   const hm = l.glucoseMorning != null, he = l.glucoseEvening != null, h = new Date().getHours();
 
-  // Build med list from Notion data
-  const medNames = medications.map(m => m.name).filter(Boolean);
-  const medSummary = medNames.length > 0 ? medNames.slice(0, 4).join(', ') + (medNames.length > 4 ? ' +' + (medNames.length - 4) + ' อื่นๆ' : '') : 'ตามใบสั่งยา';
-
-  // Note: glucose presence is an imperfect proxy for med compliance.
-  // The Notion daily log doesn't have explicit med-taken fields yet.
   el.innerHTML =
-    '<div class="med-row ' + (hm ? '' : 'pending-row') + '"><span class="med-name">ยาเช้า</span><span class="med-detail">' + medSummary + '</span><span class="med-status">' + (hm ? '✅' : (h < 12 ? '⏳' : '❌')) + '</span></div>' +
-    '<div class="med-row ' + (he ? '' : 'pending-row') + '" id="eveningMedRow"><span class="med-name">ยาเย็น</span><span class="med-detail">' + medSummary + '</span><span class="med-status">' + (he ? '✅' : (h < 18 ? '⏳' : '❌')) + '</span></div>';
+    '<div class="med-row ' + (hm ? '' : 'pending-row') + '"><span class="med-name">ยาเช้า</span><span class="med-detail">' + MED_SCHEDULE.morning + '</span><span class="med-status">' + (hm ? '<i class="icon-check"></i>' : (h < 12 ? '<i class="icon-pending"></i>' : '<i class="icon-miss"></i>')) + '</span></div>' +
+    '<div class="med-row ' + (he ? '' : 'pending-row') + '" id="eveningMedRow"><span class="med-name">ยาเย็น</span><span class="med-detail">' + MED_SCHEDULE.evening + '</span><span class="med-status">' + (he ? '<i class="icon-check"></i>' : (h < 18 ? '<i class="icon-pending"></i>' : '<i class="icon-miss"></i>')) + '</span></div>';
 }
 
 /* ====== GLUCOSE — fix null-vs-falsy with val() ====== */

@@ -61,8 +61,18 @@ h1 { font-size: 16px; font-weight: 800; color: var(--accent); letter-spacing: -0
 .med-row { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--good-bg); border-radius: 12px; min-height: 52px; }
 .pending-row { background: var(--warn-bg); }
 .med-name { font-size: 16px; font-weight: 700; min-width: 60px; }
-.med-detail { flex: 1; font-size: 14px; color: var(--text-2); }
-.med-status { font-size: 22px; flex-shrink: 0; }
+.med-detail { flex: 1; font-size: 13px; color: var(--text-2); }
+.med-status { flex-shrink: 0; display: flex; align-items: center; }
+
+/* Clean CSS icons — no emoji */
+.icon-check, .icon-miss, .icon-pending { display: inline-block; width: 20px; height: 20px; border-radius: 50%; }
+.icon-check { background: var(--good); position: relative; }
+.icon-check::after { content: ''; position: absolute; left: 6px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.icon-miss { border: 2px solid var(--bad); background: transparent; position: relative; }
+.icon-miss::before, .icon-miss::after { content: ''; position: absolute; width: 10px; height: 2px; background: var(--bad); top: 7px; left: 3px; }
+.icon-miss::before { transform: rotate(45deg); }
+.icon-miss::after { transform: rotate(-45deg); }
+.icon-pending { border: 2px solid var(--text-3); background: linear-gradient(180deg, var(--text-3) 50%, transparent 50%); }
 
 .mini-chart { display: flex; align-items: flex-end; gap: 2px; height: 28px; margin-top: 12px; padding-top: 4px; border-top: 1px solid var(--border); }
 .mini-bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 2px; }

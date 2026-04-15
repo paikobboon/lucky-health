@@ -36,16 +36,16 @@
     <div id="content" style="display:none;">
       <!-- Alert banner -->
       <div class="alert" id="alertBanner" style="display:none;">
-        <span class="alert-icon">💊</span>
+        <i class="icon-miss" style="flex-shrink:0;"></i>
         <span class="alert-text">ยาเย็นยังไม่ได้ทานนะคะป๊า</span>
-        <button class="alert-action" onclick="confirmMed()">ทานแล้ว ✅</button>
+        <button class="alert-action" onclick="confirmMed()">ทานแล้ว</button>
       </div>
 
       <div class="greeting" id="greetingText"></div>
 
       <!-- Meds -->
       <div class="card">
-        <div class="card-label">💊 ยาวันนี้</div>
+        <div class="card-label">ยาวันนี้</div>
         <div id="medRows" class="med-rows"></div>
       </div>
 
@@ -53,7 +53,7 @@
       <div class="card">
         <div class="card-row-top">
           <div>
-            <div class="card-label">📊 น้ำตาล</div>
+            <div class="card-label">น้ำตาล</div>
             <div class="big-number" id="glucoseValue">—</div>
             <div class="unit">mg/dL</div>
           </div>
@@ -66,7 +66,7 @@
       <div class="card">
         <div class="card-row-top">
           <div>
-            <div class="card-label">⚖️ น้ำหนัก</div>
+            <div class="card-label">น้ำหนัก</div>
             <div class="big-number" id="weightValue">—</div>
             <div class="unit">kg</div>
           </div>
@@ -89,16 +89,16 @@
 
       <!-- Appointments (single section, grouped by month) -->
       <div class="card" id="apptSection">
-        <div class="card-label">📅 นัดหมอ</div>
+        <div class="card-label">นัดหมอ</div>
         <div id="apptContent"></div>
       </div>
 
       <!-- Divider -->
-      <div class="section-divider"><span>📋 รายละเอียด</span></div>
+      <div class="section-divider"><span>รายละเอียด</span></div>
 
       <!-- Glucose 7-day chart -->
       <div class="card">
-        <div class="card-label">📊 น้ำตาล 7 วัน</div>
+        <div class="card-label">น้ำตาล 7 วัน</div>
         <div class="bar-chart" id="glucoseChart"></div>
         <div class="chart-days" id="chartDays"></div>
         <div class="legend">
@@ -113,7 +113,7 @@
 
       <!-- Med compliance -->
       <div class="card">
-        <div class="card-label">💊 ยา 7 วัน</div>
+        <div class="card-label">ยา 7 วัน</div>
         <div class="compliance-wrapper">
           <div class="compliance-row-labels">
             <span>เช้า</span>
@@ -125,7 +125,7 @@
 
       <!-- Insights -->
       <div class="card card-insights">
-        <div class="card-label">🐕 สรุปจากลัคกี้</div>
+        <div class="card-label">สรุปจากลัคกี้</div>
         <div class="insight-list" id="insightList"></div>
       </div>
 
