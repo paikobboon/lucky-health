@@ -103,16 +103,28 @@ function renderMeds(l) {
     '<div class="med-row ' + (he ? '' : 'pending-row') + '" id="eveningMedRow"><span class="med-name">ยาเย็น</span><span class="med-detail">' + MED_SCHEDULE.evening + '</span><span class="med-status">' + (he ? '<i class="icon-check"></i>' : (h < 18 ? '<i class="icon-pending"></i>' : '<i class="icon-miss"></i>')) + '</span></div>';
 }
 
-/* ====== GLUCOSE — fix null-vs-falsy with val() ====== */
+/* ====== GLUCOSE — show both morning and evening ====== */
+function glucoseBadge(v) {
+  if (v == null) return '';
+  const s = v < 70 ? ['ต่ำ','bad'] : v < 140 ? ['ดีมาก','good'] : v < 180 ? ['ปกติ','good'] : v < 250 ? ['สูงนิด','warn'] : ['สูงมาก','bad'];
+  return '<span class="badge ' + s[1] + '">' + s[0] + '</span>';
+}
+
 function renderGlucose(l, logs) {
-  const v = val(l.glucoseMorning, l.glucoseEvening);
-  const ve = document.getElementById('glucoseValue'), be = document.getElementById('glucoseBadge'), me = document.getElementById('glucoseMini');
-  if (v == null) { ve.textContent = '—'; be.innerHTML = '<span class="badge neutral">ยังไม่มีข้อมูล</span>'; }
-  else {
-    ve.textContent = v;
-    const s = v < 70 ? ['ต่ำ ⚠️','bad'] : v < 140 ? ['ดีมาก ✨','good'] : v < 180 ? ['ปกติดี 🌿','good'] : v < 250 ? ['สูงนิด ⚠️','warn'] : ['สูงมาก 🚨','bad'];
-    be.innerHTML = '<span class="badge ' + s[1] + '">' + s[0] + '</span>';
-  }
+  const mVal = document.getElementById('glucoseMorningVal');
+  const eVal = document.getElementById('glucoseEveningVal');
+  const mBadge = document.getElementById('glucoseMorningBadge');
+  const eBadge = document.getElementById('glucoseEveningBadge');
+
+  if (l.glucoseMorning != null) { mVal.textContent = l.glucoseMorning; mVal.className = 'glucose-val'; }
+  else { mVal.textContent = '—'; mVal.className = 'glucose-val no-data'; }
+  mBadge.innerHTML = glucoseBadge(l.glucoseMorning);
+
+  if (l.glucoseEvening != null) { eVal.textContent = l.glucoseEvening; eVal.className = 'glucose-val'; }
+  else { eVal.textContent = '—'; eVal.className = 'glucose-val no-data'; }
+  eBadge.innerHTML = glucoseBadge(l.glucoseEvening);
+
+  const me = document.getElementById('glucoseMini');
   if (me) {
     me.innerHTML = '';
     logs.forEach(x => {

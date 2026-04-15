@@ -35,12 +35,12 @@ function prop(page, name) {
 
 async function fetchDailyLogs() {
   const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
 
   const res = await query(DB.daily, {
     filter: { property: 'Date', date: { on_or_after: sevenDaysAgo.toISOString().split('T')[0] } },
     sorts: [{ property: 'Date', direction: 'ascending' }],
-    page_size: 7
+    page_size: 10
   });
 
   return res.results.map(p => ({

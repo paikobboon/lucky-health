@@ -51,13 +51,19 @@
 
       <!-- Glucose -->
       <div class="card">
-        <div class="card-row-top">
-          <div>
-            <div class="card-label">น้ำตาล</div>
-            <div class="big-number" id="glucoseValue">—</div>
-            <div class="unit">mg/dL</div>
+        <div class="card-label">น้ำตาล</div>
+        <div class="glucose-pair">
+          <div class="glucose-slot">
+            <div class="glucose-label">เช้า</div>
+            <div class="glucose-val" id="glucoseMorningVal">—</div>
+            <div class="glucose-badge" id="glucoseMorningBadge"></div>
           </div>
-          <div class="badge-area" id="glucoseBadge"></div>
+          <div class="glucose-divider"></div>
+          <div class="glucose-slot">
+            <div class="glucose-label">เย็น</div>
+            <div class="glucose-val" id="glucoseEveningVal">—</div>
+            <div class="glucose-badge" id="glucoseEveningBadge"></div>
+          </div>
         </div>
         <div class="mini-chart" id="glucoseMini"></div>
       </div>
