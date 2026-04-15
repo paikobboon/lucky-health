@@ -92,7 +92,7 @@ h1 { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -0
 .weight-bar { flex: 1; background: linear-gradient(180deg, var(--good) 0%, #bbf7d0 100%); border-radius: 3px 3px 0 0; min-height: 3px; opacity: 0.7; }
 
 .appt-list { display: flex; flex-direction: column; gap: 8px; }
-.appt-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--neutral-bg); border-radius: 12px; border-left: 4px solid var(--warn); min-height: 52px; }
+.appt-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--neutral-bg); border-radius: 12px; min-height: 52px; }
 .appt-row-date { font-size: 14px; font-weight: 700; color: var(--text); min-width: 60px; line-height: 1.4; }
 .appt-row-info { flex: 1; }
 .appt-row-doctor { font-size: 15px; font-weight: 700; color: var(--text); }
