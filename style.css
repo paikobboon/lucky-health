@@ -46,7 +46,9 @@ h1 { font-size: 16px; font-weight: 800; color: var(--accent); letter-spacing: -0
 
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin: 8px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
 .card-insights { background: linear-gradient(135deg, #f0fdf4 0%, #fefce8 100%); }
-.card-label { font-size: 14px; font-weight: 700; color: var(--text-2); margin-bottom: 10px; }
+.card-label { font-size: 14px; font-weight: 700; color: var(--text-2); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.card-label .label-icon { width: 18px; height: 18px; flex-shrink: 0; }
+.card-label .label-icon svg { width: 18px; height: 18px; }
 .card-row-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .badge-area { padding-top: 4px; }
 .big-number { font-size: 40px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -1px; }
