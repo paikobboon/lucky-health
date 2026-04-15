@@ -67,29 +67,23 @@
         </div>
       </div>
 
-      <!-- Weight (with inline trend + chart) -->
+      <!-- Weight -->
       <div class="card">
-        <div class="card-row-top">
-          <div>
-            <div class="card-label"><span class="label-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M8 3H3v5M3 16v5h5M16 21h5v-5"/><circle cx="12" cy="12" r="4"/></svg></span>น้ำหนัก</div>
-            <div class="big-number" id="weightValue">—</div>
+        <div class="card-label"><span class="label-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M8 3H3v5M3 16v5h5M16 21h5v-5"/><circle cx="12" cy="12" r="4"/></svg></span>น้ำหนัก</div>
+        <div class="glucose-pair">
+          <div class="glucose-slot">
+            <div class="glucose-label">เช้า</div>
+            <div class="glucose-val" id="weightAMVal">—</div>
             <div class="unit">kg</div>
           </div>
-          <div class="badge-area" id="weightTrend"></div>
-        </div>
-        <div class="weight-labeled-chart">
-          <div class="weight-y-labels">
-            <span id="weightMax"></span>
-            <span id="weightMin"></span>
-          </div>
-          <div class="weight-bars-area">
-            <div class="weight-chart" id="weightChart"></div>
-            <div class="weight-x-labels">
-              <span id="weightDateStart"></span>
-              <span id="weightDateEnd"></span>
-            </div>
+          <div class="glucose-divider"></div>
+          <div class="glucose-slot">
+            <div class="glucose-label">เย็น</div>
+            <div class="glucose-val" id="weightPMVal">—</div>
+            <div class="unit">kg</div>
           </div>
         </div>
+        <div class="weight-trend-row" id="weightTrendRow"></div>
       </div>
 
       <!-- Appointments (single section, grouped by month) -->

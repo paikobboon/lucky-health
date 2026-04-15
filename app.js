@@ -126,47 +126,38 @@ function renderGlucose(l, logs) {
 
 }
 
-/* ====== WEIGHT — fix trend to use same data source ====== */
+/* ====== WEIGHT — AM/PM split + trend ====== */
 function renderWeight(l, ws) {
-  const w = val(l.weightAM, l.weightPM);
-  document.getElementById('weightValue').textContent = w != null ? w : '—';
+  const amEl = document.getElementById('weightAMVal');
+  const pmEl = document.getElementById('weightPMVal');
 
-  // Trend: use weightHistory only (single source of truth)
+  if (l.weightAM != null) { amEl.textContent = l.weightAM; amEl.className = 'glucose-val'; }
+  else { amEl.textContent = '—'; amEl.className = 'glucose-val no-data'; }
+
+  if (l.weightPM != null) { pmEl.textContent = l.weightPM; pmEl.className = 'glucose-val'; }
+  else { pmEl.textContent = '—'; pmEl.className = 'glucose-val no-data'; }
+
+  // Trend: compare latest vs 7 days ago from weightHistory
+  const trendEl = document.getElementById('weightTrendRow');
   const wv = ws.map(x => x.weight).filter(v => v != null);
-  const trendEl = document.getElementById('weightTrend');
   if (wv.length >= 2) {
     const current = wv[wv.length - 1];
     const weekAgoIdx = Math.max(0, wv.length - 8);
     const weekAgo = wv[weekAgoIdx];
     const rawDiff = current - weekAgo;
     const absDiff = Math.abs(rawDiff);
-    if (absDiff < 0.1) trendEl.innerHTML = '<span class="badge neutral">→ คงที่</span>';
-    else if (rawDiff > 0) trendEl.innerHTML = '<span class="badge warn">↑ ' + absDiff.toFixed(1) + ' kg</span>';
-    else trendEl.innerHTML = '<span class="badge good">↓ ' + absDiff.toFixed(1) + ' kg</span>';
+    const weekAgoDate = ws[weekAgoIdx] ? fmtDate(ws[weekAgoIdx].date) : '';
+
+    if (absDiff < 0.1) {
+      trendEl.innerHTML = '<span class="trend-arrow flat">→</span> คงที่จาก ' + weekAgoDate;
+    } else if (rawDiff > 0) {
+      trendEl.innerHTML = '<span class="trend-arrow up">↑</span> เพิ่ม ' + absDiff.toFixed(1) + ' kg จาก ' + weekAgoDate + ' (' + weekAgo + ' kg)';
+    } else {
+      trendEl.innerHTML = '<span class="trend-arrow down">↓</span> ลด ' + absDiff.toFixed(1) + ' kg จาก ' + weekAgoDate + ' (' + weekAgo + ' kg)';
+    }
   } else {
-    trendEl.innerHTML = '<span class="badge neutral">—</span>';
+    trendEl.innerHTML = '';
   }
-
-  // Labeled bar chart (14 days)
-  const chartEl = document.getElementById('weightChart');
-  if (!chartEl) return;
-  chartEl.innerHTML = '';
-  const slice = ws.slice(-14).filter(e => e.weight != null);
-  if (slice.length === 0) { chartEl.innerHTML = '<div style="color:var(--text-3);font-size:14px;">ยังไม่มีข้อมูล</div>'; return; }
-  const vals = slice.map(x => x.weight);
-  const mn = Math.min(...vals) - 0.2, mx = Math.max(...vals) + 0.2;
-  document.getElementById('weightMin').textContent = mn.toFixed(1);
-  document.getElementById('weightMax').textContent = mx.toFixed(1);
-
-  slice.forEach(entry => {
-    const b = document.createElement('div'); b.className = 'weight-bar';
-    b.style.height = Math.max(3, ((entry.weight - mn) / (mx - mn)) * 55) + 'px';
-    b.title = entry.weight + ' kg (' + fmtDate(entry.date) + ')';
-    chartEl.appendChild(b);
-  });
-
-  document.getElementById('weightDateStart').textContent = fmtDate(slice[0].date);
-  document.getElementById('weightDateEnd').textContent = fmtDate(slice[slice.length - 1].date);
 }
 
 /* ====== APPOINTMENTS — single section, grouped by month ====== */
