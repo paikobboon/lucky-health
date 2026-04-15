@@ -29,12 +29,11 @@ const DATA = {
   ]
 };
 
-let currentView = 'simple';
-
 function init() {
   setDate();
   setGreeting();
-  renderSparkline();
+  renderGlucoseMini();
+  renderWeightMini();
   renderGlucoseChart();
   renderCompliance();
   renderWeightChart();
@@ -64,29 +63,42 @@ function setGreeting() {
   document.getElementById('greetingText').textContent = g + s;
 }
 
-function toggleView() {
-  const s = document.getElementById('simpleView');
-  const d = document.getElementById('detailView');
-  const i = document.getElementById('toggleIcon');
-  if (currentView === 'simple') {
-    s.classList.remove('active'); d.classList.add('active');
-    i.textContent = '🐕'; currentView = 'detail';
-  } else {
-    d.classList.remove('active'); s.classList.add('active');
-    i.textContent = '📋'; currentView = 'simple';
-  }
+function confirmMed() {
+  const alert = document.getElementById('alertBanner');
+  const row = document.getElementById('eveningMedRow');
+  alert.classList.add('hidden');
+  row.classList.remove('pending-row');
+  row.querySelector('.med-status').textContent = '✅';
+  row.style.background = 'var(--good-bg)';
 }
 
-function renderSparkline() {
-  const el = document.getElementById('weightSparkline');
+function renderGlucoseMini() {
+  const el = document.getElementById('glucoseMini');
   if (!el) return;
-  const d = DATA.weight.slice(-14);
-  const mn = Math.min(...d) - 0.3, mx = Math.max(...d) + 0.3;
   el.innerHTML = '';
+  const d = DATA.glucose.morning;
   d.forEach(v => {
     const b = document.createElement('div');
-    b.className = 'spark-bar';
-    b.style.height = Math.max(2, ((v - mn) / (mx - mn)) * 18) + 'px';
+    b.className = 'mini-bar';
+    b.style.height = Math.max(3, (v / 200) * 24) + 'px';
+    b.style.background = v < 140 ? 'var(--good)' : v < 180 ? 'var(--warn)' : 'var(--bad)';
+    b.style.opacity = '0.6';
+    el.appendChild(b);
+  });
+}
+
+function renderWeightMini() {
+  const el = document.getElementById('weightMini');
+  if (!el) return;
+  el.innerHTML = '';
+  const d = DATA.weight.slice(-14);
+  const mn = Math.min(...d) - 0.3, mx = Math.max(...d) + 0.3;
+  d.forEach(v => {
+    const b = document.createElement('div');
+    b.className = 'mini-bar';
+    b.style.height = Math.max(2, ((v - mn) / (mx - mn)) * 24) + 'px';
+    b.style.background = 'var(--good)';
+    b.style.opacity = '0.5';
     el.appendChild(b);
   });
 }
@@ -105,7 +117,7 @@ function renderGlucoseChart() {
     [mv, ev].forEach((v, j) => {
       const b = document.createElement('div');
       b.className = 'bar';
-      b.style.height = Math.max(6, (v / 200) * 90) + 'px';
+      b.style.height = Math.max(8, (v / 200) * 100) + 'px';
       b.style.background = v < 140 ? 'var(--good)' : v < 180 ? 'var(--warn)' : 'var(--bad)';
       b.style.opacity = j === 0 ? '1' : '0.5';
       if (j === 0) b.innerHTML = `<span class="bar-val">${v}</span>`;
@@ -142,7 +154,7 @@ function renderWeightChart() {
   d.forEach(v => {
     const b = document.createElement('div');
     b.className = 'weight-bar';
-    b.style.height = Math.max(3, ((v - mn) / (mx - mn)) * 50) + 'px';
+    b.style.height = Math.max(3, ((v - mn) / (mx - mn)) * 60) + 'px';
     el.appendChild(b);
   });
 }
