@@ -78,7 +78,8 @@ async function fetchAppointments() {
     filter: {
       and: [
         { property: 'Date & Time', date: { on_or_after: today } },
-        { property: 'Status', select: { equals: 'Scheduled' } }
+        { property: 'Status', select: { equals: 'Scheduled' } },
+        { property: 'For', select: { equals: 'Dad' } }
       ]
     },
     sorts: [{ property: 'Date & Time', direction: 'ascending' }],
