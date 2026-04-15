@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lucky Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <img src="lucky-portrait.jpg" alt="Lucky" class="header-avatar">
+        <div class="header-text">
+          <h1>Lucky Health</h1>
+          <span class="date-label" id="dateLabel"></span>
+        </div>
+        <button class="view-toggle" id="viewToggle" onclick="toggleView()">
+          <span id="toggleIcon">📋</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== SIMPLE VIEW ===== -->
+    <div id="simpleView" class="view active">
+      <div class="greeting" id="greetingText">
+        สวัสดีค่ะป๊า! วันนี้สุขภาพดีมากเลยค่ะ 🌿
+      </div>
+
+      <div class="card-grid">
+        <!-- Glucose -->
+        <div class="card">
+          <div class="card-label">📊 น้ำตาล</div>
+          <div class="card-value" id="glucoseValue">145</div>
+          <div class="card-unit">mg/dL</div>
+          <div class="card-badge" id="glucoseBadge"><span class="badge good">ปกติดี ✨</span></div>
+        </div>
+
+        <!-- Meds -->
+        <div class="card">
+          <div class="card-label">💊 ยาวันนี้</div>
+          <div class="med-rows">
+            <div class="med-row"><span>เช้า</span><span class="done">✅</span></div>
+            <div class="med-row"><span>เย็น</span><span class="pending">⏳</span></div>
+          </div>
+          <div class="card-badge"><span class="badge warn">เหลืออีก 1 มื้อ</span></div>
+        </div>
+
+        <!-- Weight -->
+        <div class="card">
+          <div class="card-label">⚖️ น้ำหนัก</div>
+          <div class="card-value">60.8</div>
+          <div class="card-unit">kg</div>
+          <div class="sparkline" id="weightSparkline"></div>
+          <div class="card-badge"><span class="badge neutral">คงที่</span></div>
+        </div>
+
+        <!-- Appointment -->
+        <div class="card">
+          <div class="card-label">📅 นัดหมอ</div>
+          <div class="appt-info">
+            <div class="appt-when">พรุ่งนี้</div>
+            <div class="appt-time">10:00</div>
+            <div class="appt-doctor">อ.วรวิทย์</div>
+            <div class="appt-where">เกษมราษฎร์</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DETAIL VIEW ===== -->
+    <div id="detailView" class="view">
+      <!-- Summary strip -->
+      <div class="summary-strip">
+        <div class="strip-item">
+          <span class="strip-val">148</span>
+          <span class="strip-label">เฉลี่ย mg/dL</span>
+        </div>
+        <div class="strip-sep"></div>
+        <div class="strip-item">
+          <span class="strip-val">71%</span>
+          <span class="strip-label">ยาครบ</span>
+        </div>
+        <div class="strip-sep"></div>
+        <div class="strip-item">
+          <span class="strip-val">-0.3</span>
+          <span class="strip-label">kg/สัปดาห์</span>
+        </div>
+      </div>
+
+      <!-- Glucose chart -->
+      <div class="section">
+        <div class="section-title">📊 น้ำตาล 7 วัน</div>
+        <div class="bar-chart" id="glucoseChart"></div>
+        <div class="chart-days" id="chartDays"></div>
+        <div class="legend">
+          <span><i class="dot good"></i>&lt;140</span>
+          <span><i class="dot warn"></i>140-180</span>
+          <span><i class="dot bad"></i>&gt;180</span>
+        </div>
+      </div>
+
+      <!-- Med compliance -->
+      <div class="section">
+        <div class="section-title">💊 ยา 7 วัน</div>
+        <div class="compliance" id="complianceGrid"></div>
+      </div>
+
+      <!-- Weight -->
+      <div class="section">
+        <div class="section-title">⚖️ น้ำหนัก 30 วัน</div>
+        <div class="weight-chart" id="weightChart"></div>
+      </div>
+
+      <!-- Appointments -->
+      <div class="section">
+        <div class="section-title">📅 นัดหมอ</div>
+        <div class="appt-list" id="apptList"></div>
+      </div>
+
+      <!-- Insights -->
+      <div class="section section-insights">
+        <div class="section-title">🐕 สรุปจากลัคกี้</div>
+        <div class="insight-list" id="insightList"></div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
