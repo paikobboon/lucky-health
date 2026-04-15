@@ -11,7 +11,6 @@
 </head>
 <body>
   <div id="app">
-    <!-- Header -->
     <header class="header">
       <img src="lucky-portrait.jpg" alt="Lucky" class="avatar">
       <div class="header-text">
@@ -20,139 +19,106 @@
       </div>
     </header>
 
-    <!-- Alert banner (if any) -->
-    <div class="alert" id="alertBanner">
-      <span class="alert-icon">💊</span>
-      <span class="alert-text">ยาเย็นยังไม่ได้ทานนะคะป๊า</span>
-      <button class="alert-action" id="medConfirmBtn" onclick="confirmMed()">ทานแล้ว ✅</button>
+    <div id="loadingState" class="state-screen">
+      <div class="loading-spinner"></div>
+      <p>ลัคกี้กำลังโหลดข้อมูลค่ะ...</p>
     </div>
 
-    <!-- Greeting -->
-    <div class="greeting" id="greetingText"></div>
+    <div id="errorState" class="state-screen" style="display:none;">
+      <div class="error-icon">😿</div>
+      <p>ลัคกี้โหลดข้อมูลไม่ได้ค่ะ</p>
+      <p class="error-detail" id="errorMsg"></p>
+      <button class="retry-btn" onclick="retry()">ลองอีกครั้ง 🔄</button>
+    </div>
 
-    <!-- Meds card (priority 1) -->
-    <div class="card">
-      <div class="card-label">💊 ยาวันนี้</div>
-      <div class="med-rows">
-        <div class="med-row">
-          <span class="med-name">ยาเช้า</span>
-          <span class="med-detail">Metformin + ยาความดัน</span>
-          <span class="med-status">✅</span>
-        </div>
-        <div class="med-row pending-row" id="eveningMedRow">
-          <span class="med-name">ยาเย็น</span>
-          <span class="med-detail">Metformin</span>
-          <span class="med-status">⏳</span>
-        </div>
+    <div id="content" style="display:none;">
+      <div class="alert" id="alertBanner" style="display:none;">
+        <span class="alert-icon">💊</span>
+        <span class="alert-text">ยาเย็นยังไม่ได้ทานนะคะป๊า</span>
+        <button class="alert-action" onclick="confirmMed()">ทานแล้ว ✅</button>
       </div>
-    </div>
 
-    <!-- Glucose card (priority 2) -->
-    <div class="card">
-      <div class="card-row-top">
-        <div>
-          <div class="card-label">📊 น้ำตาล</div>
-          <div class="big-number" id="glucoseValue">145</div>
-          <div class="unit">mg/dL</div>
-        </div>
-        <div class="badge-area">
-          <span class="badge good" id="glucoseBadge">ปกติดี ✨</span>
-        </div>
+      <div class="greeting" id="greetingText"></div>
+      <div class="freshness" id="freshnessLabel"></div>
+
+      <div class="card">
+        <div class="card-label">💊 ยาวันนี้</div>
+        <div id="medRows" class="med-rows"></div>
       </div>
-      <div class="mini-chart" id="glucoseMini"></div>
-    </div>
 
-    <!-- Appointment card (priority 3) -->
-    <div class="card card-highlight" id="apptCard">
-      <div class="card-label">📅 นัดหมอถัดไป</div>
-      <div class="appt-layout">
-        <div class="appt-left">
-          <div class="appt-when">พรุ่งนี้</div>
-          <div class="appt-time">10:00</div>
+      <div class="card">
+        <div class="card-row-top">
+          <div>
+            <div class="card-label">📊 น้ำตาล</div>
+            <div class="big-number" id="glucoseValue">—</div>
+            <div class="unit">mg/dL</div>
+          </div>
+          <div class="badge-area" id="glucoseBadge"></div>
         </div>
-        <div class="appt-right">
-          <div class="appt-doctor">อ.วรวิทย์</div>
-          <div class="appt-where">เกษมราษฎร์ · Follow-up</div>
+        <div class="mini-chart" id="glucoseMini"></div>
+      </div>
+
+      <div class="card card-highlight" id="apptCard">
+        <div class="card-label">📅 นัดหมอถัดไป</div>
+        <div class="appt-layout">
+          <div class="appt-left">
+            <div class="appt-when">—</div>
+            <div class="appt-time">—</div>
+          </div>
+          <div class="appt-right">
+            <div class="appt-doctor">—</div>
+            <div class="appt-where">—</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Weight card (priority 4) -->
-    <div class="card">
-      <div class="card-row-top">
-        <div>
-          <div class="card-label">⚖️ น้ำหนัก</div>
-          <div class="big-number">60.8</div>
-          <div class="unit">kg</div>
+      <div class="card">
+        <div class="card-row-top">
+          <div>
+            <div class="card-label">⚖️ น้ำหนัก</div>
+            <div class="big-number" id="weightValue">—</div>
+            <div class="unit">kg</div>
+          </div>
+          <div class="badge-area"><span class="badge neutral">คงที่</span></div>
         </div>
-        <div class="badge-area">
-          <span class="badge neutral">คงที่</span>
+        <div class="mini-chart" id="weightMini"></div>
+      </div>
+
+      <div class="section-divider"><span>📋 รายละเอียด</span></div>
+
+      <div class="card">
+        <div class="card-label">📊 น้ำตาล 7 วัน</div>
+        <div class="bar-chart" id="glucoseChart"></div>
+        <div class="chart-days" id="chartDays"></div>
+        <div class="legend">
+          <span><i class="dot good"></i> &lt;140 ดี</span>
+          <span><i class="dot warn"></i> 140-180</span>
+          <span><i class="dot bad"></i> &gt;180 สูง</span>
         </div>
       </div>
-      <div class="mini-chart" id="weightMini"></div>
-    </div>
 
-    <!-- Divider: detail section -->
-    <div class="section-divider">
-      <span>📋 รายละเอียด</span>
-    </div>
-
-    <!-- Summary strip -->
-    <div class="summary-strip">
-      <div class="strip-item">
-        <span class="strip-val">148</span>
-        <span class="strip-label">เฉลี่ย mg/dL</span>
+      <div class="card">
+        <div class="card-label">💊 ยา 7 วัน</div>
+        <div class="compliance" id="complianceGrid"></div>
       </div>
-      <div class="strip-sep"></div>
-      <div class="strip-item">
-        <span class="strip-val">71%</span>
-        <span class="strip-label">ยาครบ</span>
+
+      <div class="card">
+        <div class="card-label">⚖️ น้ำหนัก 30 วัน</div>
+        <div class="weight-chart" id="weightChart"></div>
       </div>
-      <div class="strip-sep"></div>
-      <div class="strip-item">
-        <span class="strip-val">-0.3</span>
-        <span class="strip-label">kg/สัปดาห์</span>
+
+      <div class="card">
+        <div class="card-label">📅 นัดหมอทั้งหมด</div>
+        <div class="appt-list" id="apptList"></div>
       </div>
-    </div>
 
-    <!-- Glucose chart -->
-    <div class="card">
-      <div class="card-label">📊 น้ำตาล 7 วัน</div>
-      <div class="bar-chart" id="glucoseChart"></div>
-      <div class="chart-days" id="chartDays"></div>
-      <div class="legend">
-        <span><i class="dot good"></i> &lt;140 ดี</span>
-        <span><i class="dot warn"></i> 140-180</span>
-        <span><i class="dot bad"></i> &gt;180 สูง</span>
+      <div class="card card-insights">
+        <div class="card-label">🐕 สรุปจากลัคกี้</div>
+        <div class="insight-list" id="insightList"></div>
       </div>
-    </div>
 
-    <!-- Med compliance -->
-    <div class="card">
-      <div class="card-label">💊 ยา 7 วัน</div>
-      <div class="compliance" id="complianceGrid"></div>
+      <div style="height:32px;"></div>
     </div>
-
-    <!-- Weight chart -->
-    <div class="card">
-      <div class="card-label">⚖️ น้ำหนัก 30 วัน</div>
-      <div class="weight-chart" id="weightChart"></div>
-    </div>
-
-    <!-- Appointments list -->
-    <div class="card">
-      <div class="card-label">📅 นัดหมอทั้งหมด</div>
-      <div class="appt-list" id="apptList"></div>
-    </div>
-
-    <!-- Insights -->
-    <div class="card card-insights">
-      <div class="card-label">🐕 สรุปจากลัคกี้</div>
-      <div class="insight-list" id="insightList"></div>
-    </div>
-
-    <!-- Footer spacer -->
-    <div style="height: 32px;"></div>
   </div>
   <script src="app.js"></script>
 </body>

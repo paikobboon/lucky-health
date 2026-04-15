@@ -1,0 +1,262 @@
+{
+  "fetchedAt": "2026-04-15T11:07:14.463Z",
+  "errors": null,
+  "dailyLogs": [
+    {
+      "date": "2026-04-08",
+      "glucoseMorning": 107,
+      "glucoseEvening": 189,
+      "weightAM": 60.25,
+      "weightPM": 60.7,
+      "sleep": "Good",
+      "appetite": "Normal",
+      "exercise": null
+    },
+    {
+      "date": "2026-04-09",
+      "glucoseMorning": 135,
+      "glucoseEvening": 189,
+      "weightAM": 60,
+      "weightPM": 60.6,
+      "sleep": "Good",
+      "appetite": "Normal",
+      "exercise": "เดิน"
+    },
+    {
+      "date": "2026-04-10",
+      "glucoseMorning": 93,
+      "glucoseEvening": 188,
+      "weightAM": 59.85,
+      "weightPM": null,
+      "sleep": null,
+      "appetite": "Normal",
+      "exercise": "เดิน"
+    },
+    {
+      "date": "2026-04-11",
+      "glucoseMorning": 80,
+      "glucoseEvening": 121,
+      "weightAM": 59.8,
+      "weightPM": 61,
+      "sleep": "Good",
+      "appetite": "Normal",
+      "exercise": "เดิน"
+    },
+    {
+      "date": "2026-04-12",
+      "glucoseMorning": 87,
+      "glucoseEvening": 209,
+      "weightAM": 60.85,
+      "weightPM": 61.65,
+      "sleep": null,
+      "appetite": "Normal",
+      "exercise": "เดิน"
+    },
+    {
+      "date": "2026-04-13",
+      "glucoseMorning": 85,
+      "glucoseEvening": 161,
+      "weightAM": null,
+      "weightPM": 61,
+      "sleep": null,
+      "appetite": "Normal",
+      "exercise": null
+    },
+    {
+      "date": "2026-04-14",
+      "glucoseMorning": null,
+      "glucoseEvening": 201,
+      "weightAM": 60.8,
+      "weightPM": 61.1,
+      "sleep": null,
+      "appetite": "Normal",
+      "exercise": "เดิน"
+    }
+  ],
+  "weightHistory": [
+    {
+      "date": "2026-03-16",
+      "weight": 60.15
+    },
+    {
+      "date": "2026-03-17",
+      "weight": 60.55
+    },
+    {
+      "date": "2026-03-18",
+      "weight": 60.25
+    },
+    {
+      "date": "2026-03-19",
+      "weight": 60.7
+    },
+    {
+      "date": "2026-03-20",
+      "weight": 60.2
+    },
+    {
+      "date": "2026-03-21",
+      "weight": 60.1
+    },
+    {
+      "date": "2026-03-22",
+      "weight": 61.15
+    },
+    {
+      "date": "2026-03-23",
+      "weight": 60.45
+    },
+    {
+      "date": "2026-03-24",
+      "weight": 60.6
+    },
+    {
+      "date": "2026-03-25",
+      "weight": 60.55
+    },
+    {
+      "date": "2026-03-26",
+      "weight": 60.6
+    },
+    {
+      "date": "2026-03-27",
+      "weight": 60.6
+    },
+    {
+      "date": "2026-03-28",
+      "weight": 60.95
+    },
+    {
+      "date": "2026-03-30",
+      "weight": 60.75
+    },
+    {
+      "date": "2026-03-31",
+      "weight": 60.25
+    },
+    {
+      "date": "2026-04-01",
+      "weight": 60.1
+    },
+    {
+      "date": "2026-04-02",
+      "weight": 61.55
+    },
+    {
+      "date": "2026-04-03",
+      "weight": 60.85
+    },
+    {
+      "date": "2026-04-04",
+      "weight": 60.85
+    },
+    {
+      "date": "2026-04-05",
+      "weight": 60.6
+    },
+    {
+      "date": "2026-04-06",
+      "weight": 60.55
+    },
+    {
+      "date": "2026-04-07",
+      "weight": 59.95
+    },
+    {
+      "date": "2026-04-08",
+      "weight": 60.25
+    },
+    {
+      "date": "2026-04-09",
+      "weight": 60
+    },
+    {
+      "date": "2026-04-10",
+      "weight": 59.85
+    },
+    {
+      "date": "2026-04-11",
+      "weight": 59.8
+    },
+    {
+      "date": "2026-04-12",
+      "weight": 60.85
+    },
+    {
+      "date": "2026-04-13",
+      "weight": 61
+    },
+    {
+      "date": "2026-04-14",
+      "weight": 60.8
+    }
+  ],
+  "appointments": [
+    {
+      "title": "เจาะเลือด อ.ปัญชลี",
+      "date": "2026-05-02",
+      "doctor": "อ.ปัญชลี",
+      "hospital": "Huachiew",
+      "type": "Follow-up",
+      "purpose": "เจาะเลือดติดตาม"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Ropect",
+      "status": null
+    },
+    {
+      "name": "ยาฆ่าเชื้อ (Antibiotics)",
+      "status": null
+    },
+    {
+      "name": "Romivon",
+      "status": null
+    },
+    {
+      "name": "Tusspac",
+      "status": null
+    },
+    {
+      "name": "รอบ 1",
+      "status": null
+    },
+    {
+      "name": "Tanzaril 50 mg",
+      "status": null
+    },
+    {
+      "name": "Ferli-6",
+      "status": null
+    },
+    {
+      "name": "อินซูลิน",
+      "status": null
+    },
+    {
+      "name": "Vitamin B 1-6-12",
+      "status": null
+    },
+    {
+      "name": "Amlodipine 5 mg",
+      "status": null
+    },
+    {
+      "name": "Metformin 500 mg",
+      "status": null
+    },
+    {
+      "name": "DicloXA 250 mg Cap (r)",
+      "status": null
+    },
+    {
+      "name": "IBUPROFEN 400 MG TAB (r)",
+      "status": null
+    },
+    {
+      "name": "Muscol (L) (MueloXac) Tab (LASA) (NED)",
+      "status": null
+    }
+  ]
+}
