@@ -32,7 +32,6 @@ function render() {
   renderGlucose(latest, logs);
   renderWeight(latest, weights);
   renderAppointments(appts);
-  renderFreshness();
   renderGlucoseChart(logs);
   renderCompliance(logs);
   renderInsights(logs, weights, appts);
@@ -55,15 +54,21 @@ function setGreeting(l) {
 }
 
 function renderDataDate(l) {
-  const el = document.getElementById('dataDateLabel');
-  if (!el || !l.date) return;
+  const el = document.getElementById('metaBadge');
+  if (!el) return;
   const today = localDateStr();
-  if (l.date === today) {
-    el.textContent = '📅 ข้อมูลวันนี้';
-    el.className = 'data-date current';
+  const mins = DATA.fetchedAt ? Math.floor((new Date() - new Date(DATA.fetchedAt)) / 6e4) : 0;
+  const freshness = mins < 5 ? 'เมื่อสักครู่' : mins < 60 ? mins + ' นาทีที่แล้ว' : mins < 1440 ? Math.floor(mins / 60) + ' ชม. ที่แล้ว' : Math.floor(mins / 1440) + ' วันที่แล้ว';
+
+  if (!l.date) {
+    el.textContent = '🔄 อัปเดต ' + freshness;
+    el.className = 'meta-badge stale';
+  } else if (l.date === today) {
+    el.textContent = '🟢 ข้อมูลวันนี้ · อัปเดต ' + freshness;
+    el.className = 'meta-badge current';
   } else {
-    el.textContent = '📅 ข้อมูลล่าสุด: ' + fmtDate(l.date);
-    el.className = 'data-date stale';
+    el.textContent = '🟡 ข้อมูล ' + fmtDate(l.date) + ' · อัปเดต ' + freshness;
+    el.className = 'meta-badge stale';
   }
 }
 
@@ -191,11 +196,7 @@ function renderAppointments(appts) {
   el.innerHTML = html;
 }
 
-function renderFreshness() {
-  const el = document.getElementById('freshnessLabel'); if (!el || !DATA.fetchedAt) return;
-  const m = Math.floor((new Date() - new Date(DATA.fetchedAt)) / 6e4);
-  el.textContent = m < 5 ? 'อัปเดตล่าสุด: เมื่อสักครู่' : m < 60 ? 'อัปเดต: ' + m + ' นาทีที่แล้ว' : m < 1440 ? 'อัปเดต: ' + Math.floor(m / 60) + ' ชม. ที่แล้ว' : 'อัปเดต: ' + Math.floor(m / 1440) + ' วันที่แล้ว';
-}
+/* renderFreshness merged into renderDataDate */
 
 /* ====== GLUCOSE CHART — values on ALL bars ====== */
 function renderGlucoseChart(logs) {
@@ -206,15 +207,13 @@ function renderGlucoseChart(logs) {
   logs.forEach(log => {
     const g = document.createElement('div'); g.className = 'bar-group';
     [log.glucoseMorning, log.glucoseEvening].forEach((v, j) => {
-      const b = document.createElement('div'); b.className = 'bar';
+      const b = document.createElement('div'); b.className = 'bar' + (j === 1 ? ' evening-bar' : '');
       if (v == null) {
         b.style.height = '4px'; b.style.background = 'var(--neutral-bg)'; b.style.border = '1px dashed var(--border)';
       } else {
         b.style.height = Math.max(12, v / 250 * 110) + 'px';
         b.style.background = v < 140 ? 'var(--good)' : v < 180 ? 'var(--warn)' : 'var(--bad)';
-        b.style.opacity = j === 0 ? '1' : '0.5';
-        if (j === 0) b.innerHTML = '<span class="bar-val">' + v + '</span>';
-        else b.innerHTML = '<span class="bar-val-bottom">' + v + '</span>';
+        b.innerHTML = '<span class="bar-val">' + v + '</span>';
       }
       g.appendChild(b);
     });
