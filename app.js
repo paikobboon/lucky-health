@@ -82,16 +82,8 @@ function renderMetaBadge(latest) {
   }
 }
 
-function renderAlert(l) {
-  const el = document.getElementById('alertBanner'), h = new Date().getHours();
-  el.style.display = (h >= 17 && l.glucoseEvening == null) ? 'flex' : 'none';
-}
-
-function confirmMed() {
-  document.getElementById('alertBanner').style.display = 'none';
-  const r = document.getElementById('eveningMedRow');
-  if (r) { r.classList.remove('pending-row'); r.querySelector('.med-status').innerHTML = '<i class="icon-check"></i>'; r.style.background = 'var(--good-bg)'; }
-}
+function renderAlert() {}
+function confirmMed() {}
 
 /* ====== MEDS — real schedule from care-agent medications.md ====== */
 const MED_SCHEDULE = {
