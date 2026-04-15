@@ -237,13 +237,19 @@ function renderInsights(logs, ws, appts) {
   el.innerHTML = '';
   const normals = [], warnings = [];
 
-  const gv = logs.map(l => l.glucoseMorning || l.glucoseEvening).filter(Boolean);
-  if (gv.length) {
-    const avg = Math.round(gv.reduce((a, b) => a + b, 0) / gv.length);
-    (avg >= 180 ? warnings : normals).push('น้ำตาลเฉลี่ย ' + gv.length + ' วัน: ' + avg + ' mg/dL');
+  const gm = logs.map(l => l.glucoseMorning).filter(v => v != null);
+  const ge = logs.map(l => l.glucoseEvening).filter(v => v != null);
+  if (gm.length) {
+    const avg = Math.round(gm.reduce((a, b) => a + b, 0) / gm.length);
+    (avg >= 180 ? warnings : normals).push('น้ำตาลเช้าเฉลี่ย: ' + avg + ' mg/dL (' + gm.length + ' วัน)');
   }
-  const hi = gv.filter(v => v >= 180);
-  if (hi.length) warnings.push('น้ำตาลสูง (>180) ' + hi.length + ' วันจาก ' + gv.length + ' วัน');
+  if (ge.length) {
+    const avg = Math.round(ge.reduce((a, b) => a + b, 0) / ge.length);
+    (avg >= 180 ? warnings : normals).push('น้ำตาลเย็นเฉลี่ย: ' + avg + ' mg/dL (' + ge.length + ' วัน)');
+  }
+  const allG = [...gm, ...ge];
+  const hi = allG.filter(v => v >= 180);
+  if (hi.length) warnings.push('น้ำตาลสูง (>180) ' + hi.length + ' ครั้งจาก ' + allG.length + ' ครั้ง');
 
   const wv = ws.map(w => w.weight).filter(Boolean);
   if (wv.length >= 7) {
