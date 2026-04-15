@@ -23,6 +23,7 @@ function render() {
   document.getElementById('content').style.display = 'block';
   const logs = DATA.dailyLogs || [], latest = logs[logs.length - 1] || {}, appts = DATA.appointments || [], weights = DATA.weightHistory || [];
   setGreeting(latest);
+  renderDataDate(latest);
   renderAlert(latest);
   renderMeds(latest);
   renderGlucose(latest, logs);
@@ -48,6 +49,19 @@ function setGreeting(l) {
   const v = l.glucoseMorning || l.glucoseEvening;
   const s = v ? (v < 140 ? ' น้ำตาลดีมากค่ะ ✨' : v < 180 ? ' น้ำตาลปกติดีค่ะ 🌿' : ' ระวังน้ำตาลหน่อยนะคะ 💛') : '';
   document.getElementById('greetingText').textContent = g + s;
+}
+
+function renderDataDate(l) {
+  const el = document.getElementById('dataDateLabel');
+  if (!el || !l.date) return;
+  const today = new Date().toISOString().split('T')[0];
+  if (l.date === today) {
+    el.textContent = '📅 ข้อมูลวันนี้';
+    el.className = 'data-date current';
+  } else {
+    el.textContent = '📅 ข้อมูลล่าสุด: ' + fmtDate(l.date);
+    el.className = 'data-date stale';
+  }
 }
 
 function renderAlert(l) {
