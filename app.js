@@ -245,9 +245,6 @@ function renderCompliance(logs) {
 
 /* ====== INSIGHTS — categorised with icons ====== */
 function renderInsights(logs, ws, appts) {
-  const el = document.getElementById('insightList'); if (!el) return;
-  el.innerHTML = '';
-
   // SVG icons (inline, tiny)
   const ICONS = {
     glucose: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
@@ -310,25 +307,30 @@ function renderInsights(logs, ws, appts) {
     if (dd <= 14) cat('appt').items.push({ text: (appts[0].title || appts[0].doctor) + ' อีก ' + dd + ' วัน', sub: fmtDate(appts[0].date) + (appts[0].hospital ? ' · ' + appts[0].hospital : ''), type: dd <= 2 ? 'warning' : 'normal' });
   }
 
-  // --- Render by category ---
+  // --- Render each category as its own card ---
+  const container = document.getElementById('insightCards');
+  if (!container) return;
+  container.innerHTML = '';
+
   categories.forEach(c => {
     if (c.items.length === 0) return;
-    const header = document.createElement('div');
-    header.className = 'insight-category-header';
-    header.innerHTML = c.icon + ' ' + c.label;
-    el.appendChild(header);
+    const card = document.createElement('div');
+    card.className = 'card card-insights';
+    let html = '<div class="card-label"><span class="label-icon">' + c.icon + '</span>สรุป' + c.label + '</div>';
+    html += '<div class="insight-list">';
     c.items.forEach(item => {
-      const d = document.createElement('div');
-      d.className = 'insight-item ' + item.type;
-      d.innerHTML = '<div class="insight-text">' + item.text + '</div>' + (item.sub ? '<div class="insight-sub">' + item.sub + '</div>' : '');
-      el.appendChild(d);
+      html += '<div class="insight-item ' + item.type + '"><div class="insight-text">' + item.text + '</div>' + (item.sub ? '<div class="insight-sub">' + item.sub + '</div>' : '') + '</div>';
     });
+    html += '</div>';
+    card.innerHTML = html;
+    container.appendChild(card);
   });
 
   if (categories.every(c => c.items.length === 0)) {
-    const d = document.createElement('div'); d.className = 'insight-item normal';
-    d.innerHTML = '<div class="insight-text">ยังไม่มีข้อมูลเพียงพอสำหรับสรุป</div>';
-    el.appendChild(d);
+    const card = document.createElement('div');
+    card.className = 'card card-insights';
+    card.innerHTML = '<div class="card-label"><span class="label-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="7" cy="8" r="2"/><circle cx="17" cy="8" r="2"/><circle cx="5" cy="14" r="2"/><circle cx="19" cy="14" r="2"/><path d="M12 18c-2.5 0-4-1.5-4-3.5S9.5 11 12 11s4 1.5 4 3.5-1.5 3.5-4 3.5z"/></svg></span>สรุป</div><div class="insight-list"><div class="insight-item normal"><div class="insight-text">ยังไม่มีข้อมูลเพียงพอสำหรับสรุป</div></div></div>';
+    container.appendChild(card);
   }
 }
 
