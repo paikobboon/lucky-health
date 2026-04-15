@@ -11,7 +11,9 @@
   --radius: 16px;
 }
 html { font-size: 16px; }
-body { font-family: 'Noto Sans Thai', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; overscroll-behavior: contain; }
+body { font-family: 'Noto Sans Thai', -apple-system, sans-serif; background: var(--bg) !important; color: var(--text) !important; min-height: 100vh; -webkit-font-smoothing: antialiased; overscroll-behavior: contain; }
+html { background: var(--bg) !important; }
+#app { background: var(--bg); min-height: 100vh; }
 
 .header { position: sticky; top: 0; z-index: 10; background: rgba(240,253,244,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; padding: 12px 20px; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); flex-shrink: 0; }
