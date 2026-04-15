@@ -8,8 +8,15 @@ async function init() {
   if (window.Telegram?.WebApp) { const t = window.Telegram.WebApp; t.ready(); t.expand(); t.setHeaderColor('#f0fdf4'); t.setBackgroundColor('#f0fdf4'); document.documentElement.style.background = '#f0fdf4'; }
   showLoading();
   try {
-    const r = await fetch('data.json?t=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
+    // Try live Notion data from Cloudflare Worker first, fall back to static data.json
+    let r;
+    try {
+      r = await fetch('https://lucky-notion-proxy.pai-kobboon.workers.dev');
+      if (!r.ok) throw new Error('Worker ' + r.status);
+    } catch (_) {
+      r = await fetch('data.json?t=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+    }
     DATA = await r.json();
     hideLoading();
     render();
