@@ -243,26 +243,46 @@ function renderCompliance(logs) {
   });
 }
 
-/* ====== INSIGHTS — grouped by color, fix toFixed string issue ====== */
+/* ====== INSIGHTS — categorised with icons ====== */
 function renderInsights(logs, ws, appts) {
   const el = document.getElementById('insightList'); if (!el) return;
   el.innerHTML = '';
-  const normals = [], warnings = [];
 
+  // SVG icons (inline, tiny)
+  const ICONS = {
+    glucose: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
+    weight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M16 3h5v5M8 3H3v5M3 16v5h5M16 21h5v-5"/><circle cx="12" cy="12" r="4"/></svg>',
+    med: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="11" width="18" height="6" rx="3"/><line x1="12" y1="11" x2="12" y2="17"/></svg>',
+    appt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
+  };
+
+  const categories = [
+    { key: 'glucose', label: 'น้ำตาล', icon: ICONS.glucose, items: [] },
+    { key: 'weight', label: 'น้ำหนัก', icon: ICONS.weight, items: [] },
+    { key: 'med', label: 'ยา', icon: ICONS.med, items: [] },
+    { key: 'appt', label: 'นัดหมอ', icon: ICONS.appt, items: [] }
+  ];
+
+  function cat(key) { return categories.find(c => c.key === key); }
+
+  // --- Glucose insights ---
   const gm = logs.map(l => l.glucoseMorning).filter(v => v != null);
   const ge = logs.map(l => l.glucoseEvening).filter(v => v != null);
   if (gm.length) {
     const avg = Math.round(gm.reduce((a, b) => a + b, 0) / gm.length);
-    (avg >= 180 ? warnings : normals).push({ text: 'น้ำตาลเช้าเฉลี่ย: ' + avg + ' mg/dL', sub: 'เฉลี่ยจาก ' + gm.length + ' วันล่าสุด' });
+    const mn = Math.min(...gm), mx = Math.max(...gm);
+    cat('glucose').items.push({ text: 'เช้าเฉลี่ย: ' + avg + ' mg/dL (ต่ำสุด ' + mn + ', สูงสุด ' + mx + ')', sub: 'คำนวณจากค่าน้ำตาลตอนเช้า ' + gm.length + ' วันล่าสุด', type: avg >= 180 ? 'warning' : 'normal' });
   }
   if (ge.length) {
     const avg = Math.round(ge.reduce((a, b) => a + b, 0) / ge.length);
-    (avg >= 180 ? warnings : normals).push({ text: 'น้ำตาลเย็นเฉลี่ย: ' + avg + ' mg/dL', sub: 'เฉลี่ยจาก ' + ge.length + ' วันล่าสุด' });
+    const mn = Math.min(...ge), mx = Math.max(...ge);
+    cat('glucose').items.push({ text: 'เย็นเฉลี่ย: ' + avg + ' mg/dL (ต่ำสุด ' + mn + ', สูงสุด ' + mx + ')', sub: 'คำนวณจากค่าน้ำตาลตอนเย็น ' + ge.length + ' วันล่าสุด', type: avg >= 180 ? 'warning' : 'normal' });
   }
   const allG = [...gm, ...ge];
   const hi = allG.filter(v => v >= 180);
-  if (hi.length) warnings.push({ text: 'น้ำตาลสูง (>180) ' + hi.length + ' ครั้ง', sub: 'จากทั้งหมด ' + allG.length + ' ครั้ง (เช้า+เย็น)' });
+  if (hi.length) cat('glucose').items.push({ text: 'สูง (>180) ' + hi.length + ' ครั้งจาก ' + allG.length + ' ครั้ง', sub: 'นับรวมทุกครั้งที่วัด (เช้า ' + gm.length + ' ครั้ง + เย็น ' + ge.length + ' ครั้ง)', type: 'warning' });
 
+  // --- Weight insights ---
   const wv = ws.map(w => w.weight).filter(v => v != null);
   if (wv.length >= 7) {
     const r = wv.slice(-7), o = wv.slice(-14, -7);
@@ -271,36 +291,44 @@ function renderInsights(logs, ws, appts) {
       const oAvg = o.reduce((a, b) => a + b, 0) / o.length;
       const rawDiff = rAvg - oAvg;
       const absDiff = Math.abs(rawDiff);
-      const text = rawDiff > 0 ? 'น้ำหนักเพิ่ม ' + absDiff.toFixed(1) + ' kg' : 'น้ำหนักลด ' + absDiff.toFixed(1) + ' kg';
-      const sub = 'เทียบเฉลี่ย 7 วันล่าสุด (' + rAvg.toFixed(1) + ') กับ 7 วันก่อนหน้า (' + oAvg.toFixed(1) + ')';
-      (absDiff > 1 ? warnings : normals).push({ text, sub });
+      const text = absDiff < 0.1 ? 'คงที่' : (rawDiff > 0 ? 'เพิ่ม ' + absDiff.toFixed(1) + ' kg' : 'ลด ' + absDiff.toFixed(1) + ' kg');
+      cat('weight').items.push({ text: text, sub: 'เทียบเฉลี่ยน้ำหนักเช้า 7 วันล่าสุด (' + rAvg.toFixed(1) + ' kg) กับ 7 วันก่อนหน้า (' + oAvg.toFixed(1) + ' kg)', type: absDiff > 1 ? 'warning' : 'normal' });
     }
   }
 
+  // --- Med compliance ---
   const tot = logs.length * 2;
   const fil = logs.reduce((a, l) => a + (l.glucoseMorning != null ? 1 : 0) + (l.glucoseEvening != null ? 1 : 0), 0);
   if (tot) {
     const p = Math.round(fil / tot * 100);
-    (p >= 80 ? normals : warnings).push({ text: 'บันทึกข้อมูลครบ ' + fil + '/' + tot + ' (' + p + '%)', sub: 'นับจากเช้า+เย็น ' + logs.length + ' วัน = ' + tot + ' ช่อง' });
+    cat('med').items.push({ text: 'บันทึกครบ ' + fil + '/' + tot + ' (' + p + '%)', sub: 'นับจากค่าน้ำตาลเช้า+เย็น ' + logs.length + ' วัน = ' + tot + ' ช่อง (ใช้แทนการบันทึกยา)', type: p >= 80 ? 'normal' : 'warning' });
   }
 
+  // --- Appointment ---
   if (appts.length) {
     const dd = daysUntil(appts[0].date);
-    if (dd <= 7) (dd <= 2 ? warnings : normals).push({ text: 'นัดหมอ ' + (appts[0].title || appts[0].doctor) + ' อีก ' + dd + ' วัน', sub: fmtDate(appts[0].date) + (appts[0].hospital ? ' · ' + appts[0].hospital : '') });
+    if (dd <= 14) cat('appt').items.push({ text: (appts[0].title || appts[0].doctor) + ' อีก ' + dd + ' วัน', sub: fmtDate(appts[0].date) + (appts[0].hospital ? ' · ' + appts[0].hospital : ''), type: dd <= 2 ? 'warning' : 'normal' });
   }
 
-  function addItem(item, type) {
-    const d = document.createElement('div'); d.className = 'insight-item ' + type;
-    d.innerHTML = '<div class="insight-text">' + item.text + '</div><div class="insight-sub">' + item.sub + '</div>';
+  // --- Render by category ---
+  categories.forEach(c => {
+    if (c.items.length === 0) return;
+    const header = document.createElement('div');
+    header.className = 'insight-category-header';
+    header.innerHTML = c.icon + ' ' + c.label;
+    el.appendChild(header);
+    c.items.forEach(item => {
+      const d = document.createElement('div');
+      d.className = 'insight-item ' + item.type;
+      d.innerHTML = '<div class="insight-text">' + item.text + '</div>' + (item.sub ? '<div class="insight-sub">' + item.sub + '</div>' : '');
+      el.appendChild(d);
+    });
+  });
+
+  if (categories.every(c => c.items.length === 0)) {
+    const d = document.createElement('div'); d.className = 'insight-item normal';
+    d.innerHTML = '<div class="insight-text">ยังไม่มีข้อมูลเพียงพอสำหรับสรุป</div>';
     el.appendChild(d);
-  }
-
-  normals.forEach(t => addItem(t, 'normal'));
-  if (normals.length && warnings.length) { const div = document.createElement('div'); div.className = 'insight-divider'; el.appendChild(div); }
-  warnings.forEach(t => addItem(t, 'warning'));
-
-  if (!normals.length && !warnings.length) {
-    addItem({ text: 'ยังไม่มีข้อมูลเพียงพอสำหรับสรุป', sub: '' }, 'normal');
   }
 }
 
