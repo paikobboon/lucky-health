@@ -76,7 +76,7 @@ function renderApptHero(appts) {
   const time = a.date.includes('T') ? a.date.split('T')[1].substring(0, 5) : '';
   c.querySelector('.appt-when').textContent = when;
   c.querySelector('.appt-time').textContent = time || '—';
-  c.querySelector('.appt-doctor').textContent = a.doctor || a.title || '—';
+  c.querySelector('.appt-doctor').textContent = a.title || a.doctor || '—';
   c.querySelector('.appt-where').textContent = [a.hospital, a.type].filter(Boolean).join(' · ');
   if (diff <= 2) c.classList.add('card-highlight');
 }
@@ -140,7 +140,7 @@ function renderApptList(appts) {
   appts.forEach(a => {
     const r = document.createElement('div'); r.className = 'appt-row';
     const t = a.date.includes('T') ? a.date.split('T')[1].substring(0, 5) : '';
-    r.innerHTML = '<div class="appt-row-date">' + fmtDate(a.date) + '<br>' + t + '</div><div class="appt-row-info"><div class="appt-row-doctor">' + (a.doctor || a.title || '—') + '</div><div class="appt-row-hospital">' + [a.hospital, a.type].filter(Boolean).join(' · ') + '</div></div>';
+    r.innerHTML = '<div class="appt-row-date">' + fmtDate(a.date) + '<br>' + t + '</div><div class="appt-row-info"><div class="appt-row-doctor">' + (a.title || a.doctor || '—') + '</div><div class="appt-row-hospital">' + [a.hospital, a.type].filter(Boolean).join(' · ') + '</div></div>';
     el.appendChild(r);
   });
 }
