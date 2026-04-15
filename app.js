@@ -124,18 +124,6 @@ function renderGlucose(l, logs) {
   else { eVal.textContent = '—'; eVal.className = 'glucose-val no-data'; }
   eBadge.innerHTML = glucoseBadge(l.glucoseEvening);
 
-  const me = document.getElementById('glucoseMini');
-  if (me) {
-    me.innerHTML = '';
-    logs.forEach(x => {
-      const gv = val(x.glucoseMorning, x.glucoseEvening);
-      if (gv == null) return;
-      const b = document.createElement('div'); b.className = 'mini-bar';
-      b.style.height = Math.max(3, gv / 250 * 24) + 'px';
-      b.style.background = gv < 140 ? 'var(--good)' : gv < 180 ? 'var(--warn)' : 'var(--bad)';
-      b.style.opacity = '0.6'; me.appendChild(b);
-    });
-  }
 }
 
 /* ====== WEIGHT — fix trend to use same data source ====== */
