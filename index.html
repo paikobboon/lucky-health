@@ -34,13 +34,6 @@
     </div>
 
     <div id="content" style="display:none;">
-      <!-- Alert banner -->
-      <div class="alert" id="alertBanner" style="display:none;">
-        <i class="icon-miss" style="flex-shrink:0;"></i>
-        <span class="alert-text">ยาเย็นยังไม่ได้ทานนะคะป๊า</span>
-        <button class="alert-action" onclick="confirmMed()">ทานแล้ว</button>
-      </div>
-
       <div class="greeting" id="greetingText"></div>
 
       <!-- Meds -->
@@ -92,6 +85,9 @@
         <div id="apptContent"></div>
       </div>
 
+      <!-- Insights — rendered dynamically as separate cards per category -->
+      <div id="insightCards"></div>
+
       <!-- Divider -->
       <div class="section-divider"><span>รายละเอียด</span></div>
 
@@ -110,9 +106,9 @@
         </div>
       </div>
 
-      <!-- Med compliance -->
+      <!-- Glucose recording grid (not med compliance — no med fields in Notion) -->
       <div class="card">
-        <div class="card-label"><span class="label-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span>ยา 7 วัน</div>
+        <div class="card-label"><span class="label-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>บันทึกน้ำตาล 7 วัน</div>
         <div class="compliance-wrapper">
           <div class="compliance-row-labels">
             <span>เช้า</span>
@@ -121,9 +117,6 @@
           <div class="compliance" id="complianceGrid"></div>
         </div>
       </div>
-
-      <!-- Insights — rendered dynamically as separate cards per category -->
-      <div id="insightCards"></div>
 
       <div style="height:32px;"></div>
     </div>

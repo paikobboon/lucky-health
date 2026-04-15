@@ -99,13 +99,16 @@ const MED_SCHEDULE = {
   evening: 'Metformin, Vit B + อินซูลิน 15u'
 };
 
+const MED_ICON_MORNING = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>';
+const MED_ICON_EVENING = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
 function renderMeds(l) {
   const el = document.getElementById('medRows'); if (!el) return;
-  const hm = l.glucoseMorning != null, he = l.glucoseEvening != null, h = new Date().getHours();
 
+  // Note: no med-taken fields in Notion. This is a static schedule reference only.
   el.innerHTML =
-    '<div class="med-row ' + (hm ? '' : 'pending-row') + '"><span class="med-name">ยาเช้า</span><span class="med-detail">' + MED_SCHEDULE.morning + '</span><span class="med-status">' + (hm ? '<i class="icon-check"></i>' : (h < 12 ? '<i class="icon-pending"></i>' : '<i class="icon-miss"></i>')) + '</span></div>' +
-    '<div class="med-row ' + (he ? '' : 'pending-row') + '" id="eveningMedRow"><span class="med-name">ยาเย็น</span><span class="med-detail">' + MED_SCHEDULE.evening + '</span><span class="med-status">' + (he ? '<i class="icon-check"></i>' : (h < 18 ? '<i class="icon-pending"></i>' : '<i class="icon-miss"></i>')) + '</span></div>';
+    '<div class="med-row"><span class="med-icon-slot">' + MED_ICON_MORNING + '</span><span class="med-name">เช้า</span><span class="med-detail">' + MED_SCHEDULE.morning + '</span></div>' +
+    '<div class="med-row"><span class="med-icon-slot">' + MED_ICON_EVENING + '</span><span class="med-name">เย็น</span><span class="med-detail">' + MED_SCHEDULE.evening + '</span></div>';
 }
 
 /* ====== GLUCOSE — show both morning and evening ====== */
@@ -256,7 +259,6 @@ function renderInsights(logs, ws, appts) {
   const categories = [
     { key: 'glucose', label: 'น้ำตาล', icon: ICONS.glucose, items: [] },
     { key: 'weight', label: 'น้ำหนัก', icon: ICONS.weight, items: [] },
-    { key: 'med', label: 'ยา', icon: ICONS.med, items: [] },
     { key: 'appt', label: 'นัดหมอ', icon: ICONS.appt, items: [] }
   ];
 
@@ -293,12 +295,12 @@ function renderInsights(logs, ws, appts) {
     }
   }
 
-  // --- Med compliance ---
+  // --- Glucose recording rate ---
   const tot = logs.length * 2;
   const fil = logs.reduce((a, l) => a + (l.glucoseMorning != null ? 1 : 0) + (l.glucoseEvening != null ? 1 : 0), 0);
   if (tot) {
     const p = Math.round(fil / tot * 100);
-    cat('med').items.push({ text: 'บันทึกครบ ' + fil + '/' + tot + ' (' + p + '%)', sub: 'นับจากค่าน้ำตาลเช้า+เย็น ' + logs.length + ' วัน = ' + tot + ' ช่อง (ใช้แทนการบันทึกยา)', type: p >= 80 ? 'normal' : 'warning' });
+    cat('glucose').items.push({ text: 'บันทึกครบ ' + fil + '/' + tot + ' (' + p + '%)', sub: 'นับจากค่าน้ำตาลเช้า+เย็น ' + logs.length + ' วัน', type: p >= 80 ? 'normal' : 'warning' });
   }
 
   // --- Appointment ---
