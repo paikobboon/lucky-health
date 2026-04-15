@@ -34,6 +34,7 @@
     </div>
 
     <div id="content" style="display:none;">
+      <!-- Alert banner -->
       <div class="alert" id="alertBanner" style="display:none;">
         <span class="alert-icon">💊</span>
         <span class="alert-text">ยาเย็นยังไม่ได้ทานนะคะป๊า</span>
@@ -43,11 +44,13 @@
       <div class="greeting" id="greetingText"></div>
       <div class="freshness" id="freshnessLabel"></div>
 
+      <!-- Meds -->
       <div class="card">
         <div class="card-label">💊 ยาวันนี้</div>
         <div id="medRows" class="med-rows"></div>
       </div>
 
+      <!-- Glucose -->
       <div class="card">
         <div class="card-row-top">
           <div>
@@ -60,20 +63,7 @@
         <div class="mini-chart" id="glucoseMini"></div>
       </div>
 
-      <div class="card card-highlight" id="apptCard">
-        <div class="card-label">📅 นัดหมอถัดไป</div>
-        <div class="appt-layout">
-          <div class="appt-left">
-            <div class="appt-when">—</div>
-            <div class="appt-time">—</div>
-          </div>
-          <div class="appt-right">
-            <div class="appt-doctor">—</div>
-            <div class="appt-where">—</div>
-          </div>
-        </div>
-      </div>
-
+      <!-- Weight (with inline trend + chart) -->
       <div class="card">
         <div class="card-row-top">
           <div>
@@ -81,13 +71,33 @@
             <div class="big-number" id="weightValue">—</div>
             <div class="unit">kg</div>
           </div>
-          <div class="badge-area"><span class="badge neutral">คงที่</span></div>
+          <div class="badge-area" id="weightTrend"></div>
         </div>
-        <div class="mini-chart" id="weightMini"></div>
+        <div class="weight-labeled-chart">
+          <div class="weight-y-labels">
+            <span id="weightMax"></span>
+            <span id="weightMin"></span>
+          </div>
+          <div class="weight-bars-area">
+            <div class="weight-chart" id="weightChart"></div>
+            <div class="weight-x-labels">
+              <span id="weightDateStart"></span>
+              <span id="weightDateEnd"></span>
+            </div>
+          </div>
+        </div>
       </div>
 
+      <!-- Appointments (single section, grouped by month) -->
+      <div class="card" id="apptSection">
+        <div class="card-label">📅 นัดหมอ</div>
+        <div id="apptContent"></div>
+      </div>
+
+      <!-- Divider -->
       <div class="section-divider"><span>📋 รายละเอียด</span></div>
 
+      <!-- Glucose 7-day chart -->
       <div class="card">
         <div class="card-label">📊 น้ำตาล 7 วัน</div>
         <div class="bar-chart" id="glucoseChart"></div>
@@ -96,24 +106,25 @@
           <span><i class="dot good"></i> &lt;140 ดี</span>
           <span><i class="dot warn"></i> 140-180</span>
           <span><i class="dot bad"></i> &gt;180 สูง</span>
+          <span class="legend-sep">|</span>
+          <span>■ เช้า</span>
+          <span>▤ เย็น</span>
         </div>
       </div>
 
+      <!-- Med compliance -->
       <div class="card">
         <div class="card-label">💊 ยา 7 วัน</div>
-        <div class="compliance" id="complianceGrid"></div>
+        <div class="compliance-wrapper">
+          <div class="compliance-row-labels">
+            <span>เช้า</span>
+            <span>เย็น</span>
+          </div>
+          <div class="compliance" id="complianceGrid"></div>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-label">⚖️ น้ำหนัก 30 วัน</div>
-        <div class="weight-chart" id="weightChart"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">📅 นัดหมอทั้งหมด</div>
-        <div class="appt-list" id="apptList"></div>
-      </div>
-
+      <!-- Insights -->
       <div class="card card-insights">
         <div class="card-label">🐕 สรุปจากลัคกี้</div>
         <div class="insight-list" id="insightList"></div>
