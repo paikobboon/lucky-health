@@ -253,24 +253,27 @@ function renderInsights(logs, ws, appts) {
   const ge = logs.map(l => l.glucoseEvening).filter(v => v != null);
   if (gm.length) {
     const avg = Math.round(gm.reduce((a, b) => a + b, 0) / gm.length);
-    (avg >= 180 ? warnings : normals).push('น้ำตาลเช้าเฉลี่ย: ' + avg + ' mg/dL (' + gm.length + ' วัน)');
+    (avg >= 180 ? warnings : normals).push({ text: 'น้ำตาลเช้าเฉลี่ย: ' + avg + ' mg/dL', sub: 'เฉลี่ยจาก ' + gm.length + ' วันล่าสุด' });
   }
   if (ge.length) {
     const avg = Math.round(ge.reduce((a, b) => a + b, 0) / ge.length);
-    (avg >= 180 ? warnings : normals).push('น้ำตาลเย็นเฉลี่ย: ' + avg + ' mg/dL (' + ge.length + ' วัน)');
+    (avg >= 180 ? warnings : normals).push({ text: 'น้ำตาลเย็นเฉลี่ย: ' + avg + ' mg/dL', sub: 'เฉลี่ยจาก ' + ge.length + ' วันล่าสุด' });
   }
   const allG = [...gm, ...ge];
   const hi = allG.filter(v => v >= 180);
-  if (hi.length) warnings.push('น้ำตาลสูง (>180) ' + hi.length + ' ครั้งจาก ' + allG.length + ' ครั้ง');
+  if (hi.length) warnings.push({ text: 'น้ำตาลสูง (>180) ' + hi.length + ' ครั้ง', sub: 'จากทั้งหมด ' + allG.length + ' ครั้ง (เช้า+เย็น)' });
 
   const wv = ws.map(w => w.weight).filter(v => v != null);
   if (wv.length >= 7) {
     const r = wv.slice(-7), o = wv.slice(-14, -7);
     if (o.length) {
-      const rawDiff = (r.reduce((a, b) => a + b, 0) / r.length) - (o.reduce((a, b) => a + b, 0) / o.length);
+      const rAvg = r.reduce((a, b) => a + b, 0) / r.length;
+      const oAvg = o.reduce((a, b) => a + b, 0) / o.length;
+      const rawDiff = rAvg - oAvg;
       const absDiff = Math.abs(rawDiff);
-      const text = rawDiff > 0 ? 'น้ำหนักเพิ่ม ' + absDiff.toFixed(1) + ' kg จากสัปดาห์ก่อน' : 'น้ำหนักลด ' + absDiff.toFixed(1) + ' kg จากสัปดาห์ก่อน';
-      (absDiff > 1 ? warnings : normals).push(text);
+      const text = rawDiff > 0 ? 'น้ำหนักเพิ่ม ' + absDiff.toFixed(1) + ' kg' : 'น้ำหนักลด ' + absDiff.toFixed(1) + ' kg';
+      const sub = 'เทียบเฉลี่ย 7 วันล่าสุด (' + rAvg.toFixed(1) + ') กับ 7 วันก่อนหน้า (' + oAvg.toFixed(1) + ')';
+      (absDiff > 1 ? warnings : normals).push({ text, sub });
     }
   }
 
@@ -278,20 +281,26 @@ function renderInsights(logs, ws, appts) {
   const fil = logs.reduce((a, l) => a + (l.glucoseMorning != null ? 1 : 0) + (l.glucoseEvening != null ? 1 : 0), 0);
   if (tot) {
     const p = Math.round(fil / tot * 100);
-    (p >= 80 ? normals : warnings).push('บันทึกข้อมูลครบ ' + fil + '/' + tot + ' (' + p + '%)');
+    (p >= 80 ? normals : warnings).push({ text: 'บันทึกข้อมูลครบ ' + fil + '/' + tot + ' (' + p + '%)', sub: 'นับจากเช้า+เย็น ' + logs.length + ' วัน = ' + tot + ' ช่อง' });
   }
 
   if (appts.length) {
     const dd = daysUntil(appts[0].date);
-    if (dd <= 7) (dd <= 2 ? warnings : normals).push('นัดหมอ ' + (appts[0].title || appts[0].doctor) + ' อีก ' + dd + ' วัน');
+    if (dd <= 7) (dd <= 2 ? warnings : normals).push({ text: 'นัดหมอ ' + (appts[0].title || appts[0].doctor) + ' อีก ' + dd + ' วัน', sub: fmtDate(appts[0].date) + (appts[0].hospital ? ' · ' + appts[0].hospital : '') });
   }
 
-  normals.forEach(t => { const d = document.createElement('div'); d.className = 'insight-item normal'; d.textContent = t; el.appendChild(d); });
+  function addItem(item, type) {
+    const d = document.createElement('div'); d.className = 'insight-item ' + type;
+    d.innerHTML = '<div class="insight-text">' + item.text + '</div><div class="insight-sub">' + item.sub + '</div>';
+    el.appendChild(d);
+  }
+
+  normals.forEach(t => addItem(t, 'normal'));
   if (normals.length && warnings.length) { const div = document.createElement('div'); div.className = 'insight-divider'; el.appendChild(div); }
-  warnings.forEach(t => { const d = document.createElement('div'); d.className = 'insight-item warning'; d.textContent = t; el.appendChild(d); });
+  warnings.forEach(t => addItem(t, 'warning'));
 
   if (!normals.length && !warnings.length) {
-    const d = document.createElement('div'); d.className = 'insight-item normal'; d.textContent = 'ยังไม่มีข้อมูลเพียงพอสำหรับสรุป'; el.appendChild(d);
+    addItem({ text: 'ยังไม่มีข้อมูลเพียงพอสำหรับสรุป', sub: '' }, 'normal');
   }
 }
 
