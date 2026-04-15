@@ -5,7 +5,6 @@ let DATA = null;
 function val(a, b) { return a != null ? a : b; }
 
 async function init() {
-  setDate();
   if (window.Telegram?.WebApp) { const t = window.Telegram.WebApp; t.ready(); t.expand(); t.setHeaderColor('#f0fdf4'); t.setBackgroundColor('#f0fdf4'); document.documentElement.style.background = '#f0fdf4'; }
   showLoading();
   try {
@@ -25,8 +24,9 @@ function retry() { init(); }
 function render() {
   document.getElementById('content').style.display = 'block';
   const logs = DATA.dailyLogs || [], latest = logs[logs.length - 1] || {}, appts = DATA.appointments || [], weights = DATA.weightHistory || [];
+  setDate(latest.date);
   setGreeting(latest);
-  renderDataDate(latest);
+  renderMetaBadge();
   renderAlert(latest);
   renderMeds(latest, DATA.medications || []);
   renderGlucose(latest, logs);
@@ -37,9 +37,9 @@ function render() {
   renderInsights(logs, weights, appts);
 }
 
-function setDate() {
-  const d = new Date(), m = THAI_MONTHS;
-  document.getElementById('dateLabel').textContent = d.getDate() + ' ' + m[d.getMonth()] + ' ' + (d.getFullYear() + 543);
+function setDate(dataDate) {
+  const d = dataDate ? parseLocalDate(dataDate) : new Date();
+  document.getElementById('dateLabel').textContent = d.getDate() + ' ' + THAI_MONTHS[d.getMonth()] + ' ' + (d.getFullYear() + 543);
 }
 
 const THAI_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
@@ -53,23 +53,13 @@ function setGreeting(l) {
   document.getElementById('greetingText').textContent = g + s;
 }
 
-function renderDataDate(l) {
+function renderMetaBadge() {
   const el = document.getElementById('metaBadge');
-  if (!el) return;
-  const today = localDateStr();
-  const mins = DATA.fetchedAt ? Math.floor((new Date() - new Date(DATA.fetchedAt)) / 6e4) : 0;
-  const freshness = mins < 5 ? 'เมื่อสักครู่' : mins < 60 ? mins + ' นาทีที่แล้ว' : mins < 1440 ? Math.floor(mins / 60) + ' ชม. ที่แล้ว' : Math.floor(mins / 1440) + ' วันที่แล้ว';
-
-  if (!l.date) {
-    el.textContent = '🔄 อัปเดต ' + freshness;
-    el.className = 'meta-badge stale';
-  } else if (l.date === today) {
-    el.textContent = '🟢 ข้อมูลวันนี้ · อัปเดต ' + freshness;
-    el.className = 'meta-badge current';
-  } else {
-    el.textContent = '🟡 ข้อมูล ' + fmtDate(l.date) + ' · อัปเดต ' + freshness;
-    el.className = 'meta-badge stale';
-  }
+  if (!el || !DATA.fetchedAt) return;
+  const mins = Math.floor((new Date() - new Date(DATA.fetchedAt)) / 6e4);
+  const freshness = mins < 5 ? 'เมื่อสักครู่' : mins < 60 ? mins + ' นาทีที่แล้ว' : mins < 1440 ? Math.floor(mins / 60) + ' ชม.' : Math.floor(mins / 1440) + ' วัน';
+  el.textContent = '🔄 ' + freshness;
+  el.className = 'meta-badge ' + (mins < 60 ? 'current' : 'stale');
 }
 
 function renderAlert(l) {
