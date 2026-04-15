@@ -18,8 +18,9 @@ async function init() {
       if (!r.ok) throw new Error('HTTP ' + r.status);
     }
     DATA = await r.json();
+    if (DATA.error) throw new Error(DATA.error);
     hideLoading();
-    render();
+    try { render(); } catch (re) { showError('Render: ' + re.message); }
   } catch (e) { showError(e.message); }
 }
 
@@ -30,8 +31,12 @@ function retry() { init(); }
 
 function render() {
   document.getElementById('content').style.display = 'block';
-  const logs = DATA.dailyLogs || [], latest = logs[logs.length - 1] || {}, appts = DATA.appointments || [], weights = DATA.weightHistory || [];
-  setDate(); // Always show today
+  if (!DATA) return;
+  const logs = DATA.dailyLogs || [];
+  const latest = logs.length > 0 ? logs[logs.length - 1] : {};
+  const appts = DATA.appointments || [];
+  const weights = DATA.weightHistory || [];
+  setDate();
   setGreeting(latest);
   renderMetaBadge(latest);
   renderAlert(latest);
@@ -139,6 +144,7 @@ function renderWeight(l, ws) {
 
   // Trend: compare latest vs 7 days ago from weightHistory
   const trendEl = document.getElementById('weightTrendRow');
+  if (!trendEl) return;
   const wv = ws.map(x => x.weight).filter(v => v != null);
   if (wv.length >= 2) {
     const current = wv[wv.length - 1];
@@ -146,7 +152,8 @@ function renderWeight(l, ws) {
     const weekAgo = wv[weekAgoIdx];
     const rawDiff = current - weekAgo;
     const absDiff = Math.abs(rawDiff);
-    const weekAgoDate = ws[weekAgoIdx] ? fmtDate(ws[weekAgoIdx].date) : '';
+    const refEntry = ws.filter(x => x.weight != null)[weekAgoIdx];
+    const weekAgoDate = refEntry ? fmtDate(refEntry.date) : '';
 
     if (absDiff < 0.1) {
       trendEl.innerHTML = '<span class="trend-arrow flat">→</span> คงที่จาก ' + weekAgoDate;
